@@ -322,13 +322,12 @@
   </div>
 
   <script>
-    // Detecta se está rodando no GitHub Pages ou localmente
+    // Detecta ambiente
+    const IS_VERCEL = location.hostname.includes('vercel.app');
     const IS_GITHUB_PAGES = location.hostname.includes('github.io');
 
-    // URL da API (produção no Render)
-    const API_BASE = IS_GITHUB_PAGES
-      ? 'https://osoficina-api.onrender.com'
-      : '';
+    // URL da API
+    const API_BASE = (IS_VERCEL || IS_GITHUB_PAGES) ? '' : '';
 
     /* ── ORDEM DAS ABAS ───────────────────────────────────────── */
     const TAB_ORDER = [
