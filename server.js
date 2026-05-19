@@ -22,7 +22,7 @@ if (!USER || !PASSWORD) {
   process.exit(1);
 }
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 const INSECURE_TLS = (process.env.INSECURE_TLS === 'true');
 const NODE_ENV = process.env.NODE_ENV || 'production';
@@ -142,11 +142,20 @@ const server = http.createServer(async (req, res) => {
   }
   applySecurityHeaders(res);
 
+  // Handle preflight
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204);
+    res.end();
+    return;
+  }
+
   const urlPath = new URL(req.url, `http://localhost:${PORT}`).pathname;
 
   if (urlPath === '/api/os') {
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
     res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     try {
       const rows = await fetchOSData();
       res.writeHead(200);
@@ -174,7 +183,7 @@ const server = http.createServer(async (req, res) => {
   });
 });
 
-server.listen(PORT, '127.0.0.1', () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log('═══════════════════════════════════════════');
   console.log(`  ✅  Servidor rodando!`);
   console.log(`      Abra: http://localhost:${PORT}`);

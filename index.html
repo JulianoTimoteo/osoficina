@@ -877,6 +877,14 @@
   </div>
 
   <script>
+    // Detecta se está rodando no GitHub Pages ou localmente
+    const IS_GITHUB_PAGES = location.hostname.includes('github.io');
+    
+    // URL da API (produção no Render)
+    const API_BASE = IS_GITHUB_PAGES 
+      ? 'https://osoficina-api.onrender.com'
+      : '';
+
     /* ── ORDEM DAS ABAS ───────────────────────────────────────── */
     const TAB_ORDER = [
       "COLHEDORA DE CANA PICADA", "CANAVIEIROS", "PRANCHA/MUNCK", "BOMBEIROS",
@@ -959,7 +967,7 @@
       }
 
       try {
-        const res = await fetch("/api/os");
+        const res = await fetch(`${API_BASE}/api/os`);
         const contentType = res.headers.get("content-type") || "";
         if (!contentType.includes("application/json")) {
           throw new Error("SERVER_NOT_RUNNING");
@@ -975,11 +983,28 @@
       } catch (err) {
         const isNotRunning = err.message === "SERVER_NOT_RUNNING" || err.message.includes("fetch") || err.message.includes("Failed");
         if (isNotRunning) {
-          showError("Servidor não encontrado", "O proxy Node.js não está rodando nesta porta.", [
-            "1. Abra o terminal na pasta do projeto",
-            "2. Execute: <code>node server.js</code>",
-            "3. Acesse: <code>http://localhost:3000</code>",
-          ]);
+          if (IS_GITHUB_PAGES) {
+            showError(
+              "Versão online (demonstração)",
+              "O backend precisa estar ativo para carregar dados reais.",
+              [
+                "O frontend está funcionando normalmente.",
+                "Para ver dados reais, rode localmente:",
+                "1. Execute: <code>node server.js</code>",
+                "2. Acesse: <code>http://localhost:3000</code>",
+              ]
+            );
+          } else {
+            showError(
+              "Servidor não encontrado",
+              "O proxy Node.js não está rodando nesta porta.",
+              [
+                "1. Abra o terminal na pasta do projeto",
+                "2. Execute: <code>node server.js</code>",
+                "3. Acesse: <code>http://localhost:3000</code>",
+              ]
+            );
+          }
         } else {
           showError("Erro na API SimpleFarm", err.message, [
             "Verifique usuário e senha no <code>server.js</code>",
