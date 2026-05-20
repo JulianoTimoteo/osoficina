@@ -86,6 +86,12 @@ module.exports = async (req, res) => {
         return res.status(400).json({ ok: false, error: 'Usuário e senha obrigatórios' });
       }
 
+      // Demo mode on Vercel (no access to internal SimpleFarm)
+      if (process.env.VERCEL) {
+        const token = generateToken({ username, cookies: 'demo', guid: 'demo' });
+        return res.status(200).json({ ok: true, token });
+      }
+
       const cookies = await authSimpleFarm(username, password);
       const guid = await getGuid(cookies);
       const token = generateToken({ username, cookies, guid });

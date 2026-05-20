@@ -67,6 +67,16 @@ module.exports = async (req, res) => {
   }
 
   try {
+    // Demo mode on Vercel (no access to internal SimpleFarm)
+    if (process.env.VERCEL || decoded.guid === 'demo') {
+      const demoRows = [
+        { COD_OS: 'OS-12345', EQP_CC_AGD: 'COLHEDORA 01', SUB_CLASSE: 'COLHEDORA DE CANA PICADA', DIAS_PERMANENCIA: 3, OS_DT_ENTRADA: '2026-05-17', OS_DT_PREVISAO: '2026-05-20', OS_OBSERVACAO: 'Aguardando peça' },
+        { COD_OS: 'OS-12346', EQP_CC_AGD: 'TRATOR 42', SUB_CLASSE: 'TRATORES', DIAS_PERMANENCIA: 8, OS_DT_ENTRADA: '2026-05-12', OS_DT_PREVISAO: '2026-05-22', OS_OBSERVACAO: '' },
+        { COD_OS: 'OS-12347', EQP_CC_AGD: 'CAMINHÃO 10', SUB_CLASSE: 'CAMINHÕES INTERNOS', DIAS_PERMANENCIA: 1, OS_DT_ENTRADA: '2026-05-19', OS_DT_PREVISAO: '2026-05-21', OS_OBSERVACAO: '' }
+      ];
+      return res.status(200).json({ ok: true, rows: demoRows });
+    }
+
     const rows = await fetchOSData(decoded.cookies, decoded.guid);
     res.status(200).json({ ok: true, rows });
   } catch (err) {
