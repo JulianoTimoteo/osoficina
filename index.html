@@ -808,7 +808,7 @@
         document.getElementById('mainContent').classList.remove('hidden');
         loadData();
       } catch {
-        errorEl.textContent = 'Erro de conexão com o servidor';
+        errorEl.textContent = 'Erro de conexão com o servidor. Abra o terminal e rode: node server.js';
         errorEl.style.display = 'block';
       }
     });

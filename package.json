@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Gestão Oficina - Dashboard de OS com proxy para SimpleFarm",
 
+  "scripts": {
+    "start": "node server.js"
+  },
+
   "dependencies": {
     "dotenv": "^16.4.5"
   },
